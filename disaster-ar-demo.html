@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Disaster Preparedness AR Demo</title>
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <style>
+      body { margin:0; overflow:hidden; }
+      #quiz {
+        position: absolute;
+        top: 10%; left: 10%; right: 10%;
+        background: rgba(255,255,255,0.95);
+        padding: 15px;
+        border-radius: 10px;
+        font-family: sans-serif;
+        display: none;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      }
+      #quiz button { margin-top: 10px; }
+    </style>
+  </head>
+  <body>
+    <!-- Quiz Box -->
+    <div id="quiz">
+      <h3>Earthquake Safety Question</h3>
+      <p>What should you do during an earthquake?</p>
+      <label><input type="radio" name="q" value="a"> Run outside immediately</label><br>
+      <label><input type="radio" name="q" value="b"> Drop, cover, and hold on</label><br>
+      <label><input type="radio" name="q" value="c"> Stand in a doorway</label><br>
+      <button id="submit">Submit</button>
+      <p id="result"></p>
+    </div>
+
+    <!-- AR Scene -->
+    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
+      <a-marker preset="hiro">
+        <!-- Desk model substitute -->
+        <a-box id="desk" color="brown" depth="1" height="0.5" width="1.5" position="0 0.25 0"
+               animation="property: rotation; dur: 600; to: 5 0 5; dir: alternate; loop: true">
+        </a-box>
+        <a-text value="Tap the desk!" color="red" position="0 1 0" align="center"></a-text>
+      </a-marker>
+      <a-entity camera></a-entity>
+    </a-scene>
+
+    <script>
+      const desk = document.getElementById('desk');
+      const quiz = document.getElementById('quiz');
+      const result = document.getElementById('result');
+      const submitBtn = document.getElementById('submit');
+
+      // Show quiz on tap
+      desk.addEventListener('click', () => {
+        quiz.style.display = 'block';
+      });
+
+      // Quiz check
+      submitBtn.addEventListener('click', () => {
+        const choice = document.querySelector('input[name="q"]:checked');
+        if (!choice) {
+          result.textContent = "Please choose an option.";
+          return;
+        }
+        if (choice.value === "b") {
+          result.innerHTML = "✅ Correct! Drop, cover, and hold on.";
+        } else {
+          result.innerHTML = "❌ Incorrect. The safest is Drop, cover, and hold on.";
+        }
+      });
+    </script>
+  </body>
+</html>
